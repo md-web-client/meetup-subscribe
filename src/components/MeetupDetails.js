@@ -6,14 +6,14 @@ const MeetupDetails = ({meetup}) => {
 
   return <div>
       { meetup.created}
-      <br/>{ meetup.description}
+      <br/>description: { meetup.description}
       <br/>{ meetup.duration}
       <br/>{ meetup.group.created}
       <br/>{ meetup.group.name}
       <br/>{ meetup.group.id}
       <br/>{ meetup.group.join_mode}
       <br/>{ meetup.group.lat}
-      <br/>{ meetup.id}
+      <br/>meetup.id: { meetup.id}
       <br/>{ meetup.link}
       <br/>{ meetup.local_date}
       <br/>{ meetup.local_time}

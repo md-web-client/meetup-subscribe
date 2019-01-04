@@ -4,6 +4,9 @@ const buttonStyle = {
   borderRadius: '.5rem',
 };
 
+// session: {
+//   accessToken: '',
+
 export default class RsvpComponent extends React.Component {
   render() {
     const Header = () => <div id="Header">Logged In as UserName</div>;
@@ -49,7 +52,10 @@ export default class RsvpComponent extends React.Component {
         </div>
       </div>
     );
-
+    console.log('hsaodhosaidhoisdhosdh', this.props.rsvp)
+    this.props.meetups.map(x => this.props.rsvp(this.props.session.accessToken, this.props.history))
+     
+    
     return (
       <section style={{ 
           backgroundColor: 'powderblue', paddingTop: '20px', paddingLeft: '20px',

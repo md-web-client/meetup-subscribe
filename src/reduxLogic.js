@@ -2,7 +2,7 @@ import { loadData, saveSession, fetchMeetups } from './actions'
 import { parseQs } from './lib/queryString'
 
 export let checkOauth  = (passedProps) => {
-    
+    console.log({sessionStorage})
     const sessionExpiresAt = sessionStorage.getItem('sessionExpiresAt')
     const sessionAccessToken = sessionStorage.getItem('sessionAccessToken')
 
