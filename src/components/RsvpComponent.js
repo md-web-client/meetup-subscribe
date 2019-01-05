@@ -17,12 +17,13 @@ export default class RsvpComponent extends React.Component {
   // https://www.meetup.com/meetup_api/docs/batch/
   rsvp(token, id, attendValue) {
     console.log('reached: ', {token, id})
+    console.log('reached: ',`${id}`)
     const config = {
       method: 'POST',
       url: 'https://api.meetup.com/2/rsvp',
       params: {
         rsvp: attendValue, //'yes/ no' 
-        event_id: id,
+        event_id: `${id}`,
         access_token: token,
       },
       
@@ -42,7 +43,7 @@ export default class RsvpComponent extends React.Component {
 
   rsvpMe = (attendValue) => {
     let meetup = this.props.meetups[0]    
-    meetup ? this.props.meetups.map(uniqmeetup => this.props.rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue)) : console.log('empty')
+    meetup ? this.props.meetups.map(uniqmeetup => this.rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue)) : console.log('empty')
   }
 
   render() {
@@ -86,8 +87,15 @@ export default class RsvpComponent extends React.Component {
     const Results = () => (
       <div id="Results">
         <div>Results</div>
+        <hr/>
         <div>
-          --------------------------------------------------------------------------------
+    {this.props.meetups.map(meetup => { console.log(meetup); return <div>
+        <br/>{ meetup.group.name} at { meetup.venue.name}
+        <br/><br/>description: { meetup.description} Join Mode: { meetup.group.join_mode}
+        
+        <br/>{ meetup.venue.repinned}
+        <hr/>
+      </div>} )}
         </div>
       </div>
     );

@@ -1,3 +1,8 @@
+# Usage,
+Website is live at this [url](https://meetup-oauth2.herokuapp.com/index.html): https://meetup-oauth2.herokuapp.com/index.html
+
+Rsvp's only work for meetups that have been announced by the organizer. 🧐
+
 # Meetup Oauth2 React Redux Starter Application.
 
 1) Big thanks to [epoch meup](https://github.com/epoch/meup). The oauth stuff was implemented from that project.
