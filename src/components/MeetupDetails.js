@@ -1,8 +1,6 @@
 import React from 'react'
 
 const MeetupDetails = ({meetup}) => {
-  console.log({meetup})
-
 
   return <div>
       { meetup.created}

@@ -21,7 +21,6 @@ export default class Login extends React.Component {
       </div>
     </div>
 
-    console.log('props', this.props, 'props')
     return <div>
       <Comp/>
     </div>

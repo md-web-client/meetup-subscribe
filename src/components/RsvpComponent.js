@@ -18,8 +18,6 @@ export default class RsvpComponent extends React.Component {
 
   // https://www.meetup.com/meetup_api/docs/batch/
   rsvp(token, id, attendValue) {
-    console.log('reached: ', {token, id})
-    console.log('reached: ',`${id}`)
     const config = {
       method: 'POST',
       url: 'https://api.meetup.com/2/rsvp',
@@ -40,7 +38,7 @@ export default class RsvpComponent extends React.Component {
         "Postman-Token": "c6853dae-c8b5-476a-8818-ba8c84a4d67a"
       }})
     .catch(err => { console.log(err) })
-    .then(res => { console.log(res) });
+    .then(res => { return res});
   }
 
   rsvpMe = (attendValue) => {
@@ -91,7 +89,7 @@ export default class RsvpComponent extends React.Component {
         <div>Results</div>
         <hr/>
           <div>
-            {this.props.meetups.map(meetup => { console.log(meetup); return <div>
+            {this.props.meetups.map( (meetup, index) => { return <div key={index}>
             <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
             <br/>{ meetup.group.name} at { meetup.venue.name}
             <br/><br/>description: { meetup.description} Join Mode: { meetup.group.join_mode}
