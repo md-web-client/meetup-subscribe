@@ -58,13 +58,13 @@ export function fetchMeetups(token, history) {
       history.push('rsvp')
         
         const config2 = {
-          url: 'https://api.meetup.com/meetups/self',
+          url: 'https://api.meetup.com/members/self',
           params: {
             access_token: token
           }
         }
-        axios(config2)
-
+        const getMemberName = () => axios(config2)
+        
         const config = {
           url: 'https://api.meetup.com/self/events',
           params: {
@@ -73,11 +73,18 @@ export function fetchMeetups(token, history) {
             access_token: token
           }
         }
+        const getMeetups = () => axios(config)
         
+
         try{
-          return dispatch(receivedMeetups((await axios(config)).data))
+          let meetups = (await getMeetups()).data
+          let name = (await getMemberName()).data.name
+          meetups.name = name
+          console.log({meetups, name})
+          return dispatch(receivedMeetups(meetups))
         }
-        catch{
+        catch(e){
+          console.log(e)
           history.push('login') // temporary hack to reset app when request fail due to meetup only allowing cors with valid token
         }
 
