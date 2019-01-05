@@ -34,8 +34,7 @@ class Routes extends Component {
   }
 
   render() {
-    const { meetups, meetup, isFetching, history, session} = this.props
-    console.log({history})
+    const { meetups, meetup, isFetching, session} = this.props
     return (
         <Switch>
           <Route path="/" exact component={ Login } />
