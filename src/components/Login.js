@@ -16,7 +16,9 @@ export default class Login extends React.Component {
     const url = 'https://secure.meetup.com/oauth2/authorize' + toQs(params)
 
     const Comp = () => <div className="ph3">
-      <a href={url}>Button Text</a>
+      <div style={{ display:'flex', justifyContent: 'center', alignItems: 'center', width:'300px',height:'100px', margin:'200px', backgroundColor:'powderblue'}}>
+        <a href={url} style={{fontSize:"30px"}}>Click to Login</a>
+      </div>
     </div>
 
     console.log('props', this.props, 'props')
