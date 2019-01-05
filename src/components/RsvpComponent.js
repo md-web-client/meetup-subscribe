@@ -1,5 +1,5 @@
 import React from 'react';
-
+import axios from 'axios'
 const buttonStyle = {
   borderRadius: '.5rem',
 };
@@ -8,16 +8,55 @@ const buttonStyle = {
 //   accessToken: '',
 
 export default class RsvpComponent extends React.Component {
+  constructor(props){
+    super(props);
+    this.rsvpMe = this.rsvpMe.bind(this)
+    this.rsvp = this.rsvp.bind(this)
+  }
+
+  // https://www.meetup.com/meetup_api/docs/batch/
+  rsvp(token, id, attendValue) {
+    console.log('reached: ', {token, id})
+    const config = {
+      method: 'POST',
+      url: 'https://api.meetup.com/2/rsvp',
+      params: {
+        rsvp: attendValue, //'yes/ no' 
+        event_id: id,
+        access_token: token,
+      },
+      
+    };
+    return axios(config, {headers: {
+        "Accept": "*/*",
+        "Referer": "http://127.0.0.1:3000/",
+        "Origin": "http://127.0.0.1:3000",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "cache-control": "no-cache",
+        "Postman-Token": "c6853dae-c8b5-476a-8818-ba8c84a4d67a"
+      }})
+    .catch(err => { console.log(err) })
+    .then(res => { console.log(res) });
+  }
+
+  rsvpMe = (attendValue) => {
+    let meetup = this.props.meetups[0]    
+    meetup ? this.props.meetups.map(uniqmeetup => this.props.rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue)) : console.log('empty')
+  }
+
   render() {
     const Header = () => <div id="Header">Logged In as UserName</div>;
 
     const RsvpButtons = () => (
       <span id="RsvpButton" style={{ display: 'flex' }}>
         <span style={{ minWidth: '170px' }}>
-          <button style={buttonStyle}>Rsvp Yes All</button>
+          <button style={buttonStyle} onClick={() => this.rsvpMe('yes')} >
+            Rsvp Yes All
+          </button>
         </span>
         <span style={{ minWidth: '104px' }}>
-          <button style={buttonStyle}>Rsvp No All</button>
+          <button style={buttonStyle} onClick={() => this.rsvpMe('no')}>Rsvp No All</button>
         </span>
         <span style={{ width: '100%', textAlign: 'center' }}>
           Status: So far no rsvp logged
@@ -52,8 +91,6 @@ export default class RsvpComponent extends React.Component {
         </div>
       </div>
     );
-    console.log('hsaodhosaidhoisdhosdh', this.props.rsvp)
-    this.props.meetups.map(x => this.props.rsvp(this.props.session.accessToken, this.props.history))
      
     
     return (
