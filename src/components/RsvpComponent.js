@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios'
+import moment from 'moment'
+
 const buttonStyle = {
   borderRadius: '.5rem',
 };
@@ -88,14 +90,15 @@ export default class RsvpComponent extends React.Component {
       <div id="Results">
         <div>Results</div>
         <hr/>
-        <div>
-    {this.props.meetups.map(meetup => { console.log(meetup); return <div>
-        <br/>{ meetup.group.name} at { meetup.venue.name}
-        <br/><br/>description: { meetup.description} Join Mode: { meetup.group.join_mode}
-        
-        <br/>{ meetup.venue.repinned}
-        <hr/>
-      </div>} )}
+          <div>
+            {this.props.meetups.map(meetup => { console.log(meetup); return <div>
+            <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
+            <br/>{ meetup.group.name} at { meetup.venue.name}
+            <br/><br/>description: { meetup.description} Join Mode: { meetup.group.join_mode}
+            <br/>{ meetup.venue.repinned}
+            <hr/>
+          </div>} 
+          )}
         </div>
       </div>
     );
