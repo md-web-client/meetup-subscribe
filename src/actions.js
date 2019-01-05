@@ -43,10 +43,10 @@ export function receivedMeetups(json) {
     meetups: json
   }
 }
-
+// https://www.youtube.com/watch?v=3u7kDfEtKfs
 export function fetchMeetups(token, history) {
 
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const timeNow = new Date() / 1000 // in seconds
     if (shouldRenewToken(getState(), timeNow)) {
       console.info('need to renew token')
@@ -56,23 +56,31 @@ export function fetchMeetups(token, history) {
       console.info('token still good')
       dispatch(requestMeetups())
       history.push('rsvp')
-
-      const config = {
-        url: 'https://api.meetup.com/self/events',
-        params: {
-          page: 20,
-          status: 'upcoming',
-          access_token: token
+        
+        const config2 = {
+          url: 'https://api.meetup.com/meetups/self',
+          params: {
+            access_token: token
+          }
         }
-      }
-      return axios(config)
-        .catch(err => {
-          // window.location = ''
+        axios(config2)
+
+        const config = {
+          url: 'https://api.meetup.com/self/events',
+          params: {
+            page: 20,
+            status: 'upcoming',
+            access_token: token
+          }
+        }
+        
+        try{
+          return dispatch(receivedMeetups((await axios(config)).data))
+        }
+        catch{
           history.push('login') // temporary hack to reset app when request fail due to meetup only allowing cors with valid token
-        })
-        .then(res => {
-          return dispatch(receivedMeetups(res.data))
-        })
+        }
+
     }
 
   }
