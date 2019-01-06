@@ -1,12 +1,8 @@
 import { find, propEq /* filter */ } from 'ramda'
-import { REQUEST_MEETUPS, RECEIVE_MEETUPS, TO_HOME, TO_MEETUP_DETAILS,
+import { REQUEST_MEETUPS, RECEIVE_MEETUPS, TO_MEETUP_DETAILS,
   TO_LOGIN, SAVE_SESSION, LOAD_DATA } from './actions'
 
 const initState = {
-  route: {
-    view: 'login',
-    id: ''
-  },
   session: {
     accessToken: '',
     expiresAt: ''
@@ -40,22 +36,14 @@ const reducer = (state = initState, action) => {
     console.info('clear session in session storage and state')
     sessionStorage.clear()
     return Object.assign({}, state, {
-      route: { view: 'login' },
+      // reset token
       session: {
         accessToken: '',
         expiresAt: ''
       }
     })
-  case TO_HOME:
-    return Object.assign({}, state, {
-      route: { view: 'home' }
-    })
   case TO_MEETUP_DETAILS:
     return Object.assign({}, state, {
-      route: {
-        view: 'show',
-        id: action.id
-      },
       meetup: find(propEq('id', action.id), state.meetups)
     })
   case REQUEST_MEETUPS:
