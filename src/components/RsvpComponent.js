@@ -1,6 +1,6 @@
 import React from 'react';
-import axios from 'axios'
 import moment from 'moment'
+import { rsvp } from '../revamp'
 
 const buttonStyle = {
   borderRadius: '.5rem',
@@ -13,37 +13,11 @@ export default class RsvpComponent extends React.Component {
   constructor(props){
     super(props);
     this.rsvpMe = this.rsvpMe.bind(this)
-    this.rsvp = this.rsvp.bind(this)
-  }
-
-  // https://www.meetup.com/meetup_api/docs/batch/
-  rsvp(token, id, attendValue) {
-    const config = {
-      method: 'POST',
-      url: 'https://api.meetup.com/2/rsvp',
-      params: {
-        rsvp: attendValue, //'yes/ no' 
-        event_id: `${id}`,
-        access_token: token,
-      },
-      
-    };
-    return axios(config, {headers: {
-        "Accept": "*/*",
-        "Referer": "http://127.0.0.1:3000/",
-        "Origin": "http://127.0.0.1:3000",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "cache-control": "no-cache",
-        "Postman-Token": "c6853dae-c8b5-476a-8818-ba8c84a4d67a"
-      }})
-    .catch(err => { console.log(err) })
-    .then(res => { return res});
   }
 
   rsvpMe = (attendValue) => {
     let meetup = this.props.meetups[0]    
-    meetup ? this.props.meetups.map(uniqmeetup => this.rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue)) : console.log('empty')
+    meetup ? this.props.meetups.map(uniqmeetup => rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue)) : console.log('empty')
   }
 
   render() {
@@ -92,7 +66,8 @@ export default class RsvpComponent extends React.Component {
             {this.props.meetups.map( (meetup, index) => { return <div key={index}>
             <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
             <br/>{ meetup.group.name} at { meetup.venue.name}
-            <br/><br/>description: { meetup.description} Join Mode: { meetup.group.join_mode}
+            <br/><br/>Join Mode: { meetup.group.join_mode}
+            <br/><br/>description: { meetup.description.replace(/<\/?[^>]+(>|$)/g, "")} 
             <br/>{ meetup.venue.repinned}
             <hr/>
           </div>} 
