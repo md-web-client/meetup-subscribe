@@ -58,7 +58,7 @@ export function fetchMeetups(token, history) {
         }
         catch(e){
           console.log(e)
-          history.push('login') // temporary hack to reset app when request fail due to meetup only allowing cors with valid token
+          history.push('error') // temporary hack to reset app when request fail due to meetup only allowing cors with valid token
         }
     }
   }

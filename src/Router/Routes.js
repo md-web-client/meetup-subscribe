@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { Login, Meetups, MeetupDetails, RsvpComponent } from '../reactLoadable';
+import { Error, Login, Meetups, MeetupDetails, RsvpComponent } from '../reactLoadable';
 import { connect } from 'react-redux'
 import { checkOauth } from '../reduxLogic';
 import { toMeetupDetails } from '../actions';
@@ -34,10 +34,12 @@ class Routes extends Component {
   }
 
   render() {
-    const { meetups, meetup, isFetching, session} = this.props
+    const { meetups, meetup, isFetching, session, history} = this.props
+    console.log({history})
     return (
         <Switch>
           <Route path="/" exact component={ Login } />
+          <Route path="/error" exact render={(props) => <Error history={history} />} />
           <Route path="/login" exact render={(props) => <Login />} />
           <Route path="/meetups" exact render={(props) => <Meetups meetups={meetups} onSelect={this.show} isFetching={isFetching} />} />
           <Route path="/meetupdetails" exact render={(props) => <MeetupDetails meetup={meetup} onBack={this.home} />} />
