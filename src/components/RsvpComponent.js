@@ -102,15 +102,14 @@ export default class RsvpComponent extends React.Component {
         <div>Results</div>
         <hr/>
           <div>
-            {this.state.meetups.map( (meetup, index) => { return <div key={index}>
+            { this.state.meetups ? this.state.meetups.map( (meetup, index) => { return <div key={index}>
             <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
             <br/>{ meetup.group.name} at { meetup.venue.name}
             <br/><br/>Join Mode: { meetup.group.join_mode}
             <br/><br/>description: { meetup.description.replace(/<\/?[^>]+(>|$)/g, "")} 
             <br/>{ meetup.venue.repinned}
             <hr/>
-          </div>} 
-          )}
+          </div>}) : <div></div> } 
         </div>
       </div>
     );
