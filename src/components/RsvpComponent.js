@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment'
-import { rsvp, fetchSpecificGroupMeetup } from '../revamp'
+import { rsvp, fetchMeetup, fetchSpecificGroupMeetup } from '../revamp'
 
 const buttonStyle = {
   borderRadius: '.5rem',
@@ -14,30 +14,24 @@ export default class RsvpComponent extends React.Component {
     super(props);
     this.rsvpMe = this.rsvpMe.bind(this)
     this.fetchSpecificGroupMeetup = fetchSpecificGroupMeetup.bind(this)
+    this.fetchMeetup = fetchMeetup.bind(this)
     this.state={
       meetups:[]
     }
   }
 
-  fetchSpecificGroupMeetup = (groupName) => {
-    console.log('dddddddddddddddddddddddddddddddddddddddddd')
-    fetchSpecificGroupMeetup(this.props.session.accessToken, {}, groupName)
-  }
-
   rsvpMe = (attendValue) => {
-    let meetup = this.props.meetups[0]    
-    meetup ? this.props.meetups.map(uniqmeetup => rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue)) : console.log('empty')
+    let meetup = this.state.meetups    
+    meetup ? this.state.meetups.map(uniqmeetup => rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue)) : console.log('empty')
   }
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.meetups !== prevProps.meetups) {
-      console.log('reached')
       this.setState({meetups:this.props.meetups})
     }
   }
 
   render() {
-    console.log(this.state)
     const Header = () => <div id="Header">Logged In as UserName</div>;
 
     const RsvpButtons = () => (
@@ -77,9 +71,16 @@ export default class RsvpComponent extends React.Component {
 
     const SearchGroupsUsingButtons = ( {label} ) => {
       return ( <div>
-        <div >
-          {label}
+        <div style={{ display: 'flex' }}>
+          <span style={{minWidth: '170px' }}>{label}</span>
+          <button onClick={() => { 
+            fetchMeetup(this.props.session.accessToken, {}) 
+            .then(x => {this.setState({meetups: x})})
+          }}>
+            Display All Meetups (default behavior)
+          </button>
         </div>
+        <br/>
         {this.props.meetups.groups ? this.props.meetups.groups.map( (obj, index) => { 
           return <button onClick={() => {
               fetchSpecificGroupMeetup(this.props.session.accessToken, {}, obj.name)
@@ -117,9 +118,9 @@ export default class RsvpComponent extends React.Component {
       }} >
         <Header />
         <br />
-        <RsvpButtons />
-        <br />
         <SearchGroupsUsingButtons label="Search Group" />
+        <br />
+        <RsvpButtons />
         {/*
         <SearchInput label="Search Group" />
         <SearchInput label="Search Common Title" />

@@ -2,7 +2,6 @@ import { loadData, saveSession, fetchMeetups } from './actions'
 import { parseQs } from './lib/queryString'
 
 export let checkOauth  = (passedProps) => {
-    console.log({passedProps: passedProps.history.location.pathname})
     if(passedProps.history.location.pathname === "/error"){
         console.log('no request was made because error component was previous.')
     } else {
