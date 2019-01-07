@@ -14,6 +14,7 @@ export default class RsvpComponent extends React.Component {
     super(props);
     this.rsvpMe = this.rsvpMe.bind(this)
     this.rsvp = this.rsvp.bind(this)
+    this.props.status="So far no rsvp logged"
   }
 
   // https://www.meetup.com/meetup_api/docs/batch/
@@ -62,7 +63,7 @@ export default class RsvpComponent extends React.Component {
           <button style={buttonStyle} onClick={() => this.rsvpMe('no')}>Rsvp No All</button>
         </span>
         <span style={{ width: '100%', textAlign: 'center' }}>
-          Status: So far no rsvp logged
+          {this.state.status}
         </span>
       </span>
     );
