@@ -70,7 +70,7 @@ export default class RsvpComponent extends React.Component {
     // );
 
     const SearchGroupsUsingButtons = ( {label} ) => {
-      return ( <div>
+      return ( <div style={{ maxWidth: '1180px' }}>
         <div style={{ display: 'flex' }}>
           <span style={{minWidth: '170px' }}>{label}</span>
           <button onClick={() => { 
