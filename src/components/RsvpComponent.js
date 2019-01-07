@@ -18,6 +18,35 @@ export default class RsvpComponent extends React.Component {
     this.state={
       meetups:[]
     }
+    this.rsvp = this.rsvp.bind(this)
+    this.props.status="So far no rsvp logged"
+  }
+
+  // https://www.meetup.com/meetup_api/docs/batch/
+  rsvp(token, id, attendValue) {
+    console.log('reached: ', {token, id})
+    console.log('reached: ',`${id}`)
+    const config = {
+      method: 'POST',
+      url: 'https://api.meetup.com/2/rsvp',
+      params: {
+        rsvp: attendValue, //'yes/ no' 
+        event_id: `${id}`,
+        access_token: token,
+      },
+      
+    };
+    return axios(config, {headers: {
+        "Accept": "*/*",
+        "Referer": "http://127.0.0.1:3000/",
+        "Origin": "http://127.0.0.1:3000",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "cache-control": "no-cache",
+        "Postman-Token": "c6853dae-c8b5-476a-8818-ba8c84a4d67a"
+      }})
+    .catch(err => { console.log(err) })
+    .then(res => { console.log(res) });
   }
 
   rsvpMe = (attendValue) => {
@@ -45,7 +74,7 @@ export default class RsvpComponent extends React.Component {
           <button style={buttonStyle} onClick={() => this.rsvpMe('no')}>Rsvp No All</button>
         </span>
         <span style={{ width: '100%', textAlign: 'center' }}>
-          Status: So far no rsvp logged
+          {this.state.status}
         </span>
       </span>
     );
