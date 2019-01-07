@@ -9,6 +9,7 @@ const initState = {
   },
   meetup: {},
   meetups: [],
+  groups: [],
   isFetching: false
 }
 

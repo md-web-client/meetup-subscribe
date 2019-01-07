@@ -1,4 +1,4 @@
-import { fetchName, fetchMeetup, shouldRenewToken } from './revamp'
+import { fetchName, fetchMeetup, fetchGroups, shouldRenewToken } from './revamp'
 // import { parseQs } from './lib/queryString'
 
 export const REQUEST_MEETUPS = 'REQUEST_MEETUPS'
@@ -31,6 +31,10 @@ export function requestMeetups() {
   return { type: REQUEST_MEETUPS }
 }
 
+export function toLogin() {
+  return { type: TO_LOGIN }
+}
+
 export function receivedMeetups(json) {
   return {
     type: RECEIVE_MEETUPS,
@@ -44,6 +48,7 @@ export function fetchMeetups(token, history) {
   return async (dispatch, getState) => {
     if (shouldRenewToken(getState())) {
       console.info('need to renew token')
+      dispatch(toLogin())
       history.push('login')
     } else {
       console.info('token still good')
@@ -51,7 +56,9 @@ export function fetchMeetups(token, history) {
       history.push('rsvp')
         try{
           let name = (await fetchName(token)).data.name
-          let meetups = (await fetchMeetup(token)).data
+          let meetups = (await fetchMeetup(token, {}))
+          let groups = await fetchGroups(token)
+          meetups.groups = groups
           meetups.name = name
           
           return dispatch(receivedMeetups(meetups))
