@@ -11,6 +11,7 @@ function mapStateToProps(state) {
   return {
     meetups: state.meetups,
     meetup: state.meetup,
+    groups: state.groups,
     route: state.route,
     session: state.session,
     isFetching: state.isFetching
@@ -34,8 +35,8 @@ class Routes extends Component {
   }
 
   render() {
-    const { meetups, meetup, isFetching, session, history} = this.props
-    console.log({history})
+    const { meetups, meetup, groups, isFetching, session, history} = this.props
+    console.log('ppppppppp', groups)
     return (
         <Switch>
           <Route path="/" exact component={ Login } />
@@ -43,7 +44,7 @@ class Routes extends Component {
           <Route path="/login" exact component={ Login } />
           <Route path="/meetups" exact render={(props) => <Meetups meetups={meetups} onSelect={this.show} isFetching={isFetching} />} />
           <Route path="/meetupdetails" exact render={(props) => <MeetupDetails meetup={meetup} onBack={this.home} />} />
-          <Route path="/rsvp" exact render={(props) => <RsvpComponent meetups={meetups} session={session} rsvp={this.rsvp} />} />
+          <Route path="/rsvp" exact render={(props) => <RsvpComponent meetups={meetups} groups={groups} session={session} rsvp={this.rsvp} />} />
           <Route render={() => <Redirect to="/" />} />
         </Switch>
     )

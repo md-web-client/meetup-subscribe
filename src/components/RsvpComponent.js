@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment'
-import { rsvp } from '../revamp'
+import { rsvp, fetchSpecificGroupMeetup } from '../revamp'
 
 const buttonStyle = {
   borderRadius: '.5rem',
@@ -13,14 +13,31 @@ export default class RsvpComponent extends React.Component {
   constructor(props){
     super(props);
     this.rsvpMe = this.rsvpMe.bind(this)
+    this.fetchSpecificGroupMeetup = fetchSpecificGroupMeetup.bind(this)
+    this.state={
+      meetups:[]
+    }
+  }
+
+  fetchSpecificGroupMeetup = (groupName) => {
+    console.log('dddddddddddddddddddddddddddddddddddddddddd')
+    fetchSpecificGroupMeetup(this.props.session.accessToken, {}, groupName)
   }
 
   rsvpMe = (attendValue) => {
     let meetup = this.props.meetups[0]    
     meetup ? this.props.meetups.map(uniqmeetup => rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue)) : console.log('empty')
   }
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.meetups !== prevProps.meetups) {
+      console.log('reached')
+      this.setState({meetups:this.props.meetups})
+    }
+  }
 
   render() {
+    console.log(this.state)
     const Header = () => <div id="Header">Logged In as UserName</div>;
 
     const RsvpButtons = () => (
@@ -39,31 +56,48 @@ export default class RsvpComponent extends React.Component {
       </span>
     );
 
-    const SearchInput = (
-      { label } // label
-    ) => (
-      <div
-        id="SearchInput"
-        style={{ display: 'flex', padding: '3px 0px 3px 0px' }}
-      >
-        <span style={{ minWidth: '170px' }}>{label}</span>
-        <span style={{ width: '100%' }}>
-          <input
-            style={{ width: '95%' }}
-            type="text"
-            name={label}
-            placeholder="(provides all meetups results if not modified)"
-          />
-        </span>
+    // const SearchInput = (
+    //   { label } // label
+    // ) => (
+    //   <div
+    //     id="SearchInput"
+    //     style={{ display: 'flex', padding: '3px 0px 3px 0px' }}
+    //   >
+    //     <span style={{ minWidth: '170px' }}>{label}</span>
+    //     <span style={{ width: '100%' }}>
+    //       <input
+    //         style={{ width: '95%' }}
+    //         type="text"
+    //         name={label}
+    //         placeholder="(provides all meetups results if not modified)"
+    //       />
+    //     </span>
+    //   </div>
+    // );
+
+    const SearchGroupsUsingButtons = ( {label} ) => {
+      return ( <div>
+        <div >
+          {label}
+        </div>
+        {this.props.meetups.groups ? this.props.meetups.groups.map( (obj, index) => { 
+          return <button onClick={() => {
+              fetchSpecificGroupMeetup(this.props.session.accessToken, {}, obj.name)
+              .then(x => {this.setState({meetups: x})})
+            }
+          } key={index} >{obj.name}</button>
+          }) : <div></div> 
+        }
       </div>
-    );
+    )
+    }
 
     const Results = () => (
       <div id="Results">
         <div>Results</div>
         <hr/>
           <div>
-            {this.props.meetups.map( (meetup, index) => { return <div key={index}>
+            {this.state.meetups.map( (meetup, index) => { return <div key={index}>
             <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
             <br/>{ meetup.group.name} at { meetup.venue.name}
             <br/><br/>Join Mode: { meetup.group.join_mode}
@@ -75,7 +109,6 @@ export default class RsvpComponent extends React.Component {
         </div>
       </div>
     );
-     
     
     return (
       <section style={{ 
@@ -86,12 +119,17 @@ export default class RsvpComponent extends React.Component {
         <br />
         <RsvpButtons />
         <br />
+        <SearchGroupsUsingButtons label="Search Group" />
+        {/*
         <SearchInput label="Search Group" />
         <SearchInput label="Search Common Title" />
+        */}
+        {/*
         <br />
         <div className="flex">
           <button>Search</button>
         </div>
+        */}
         <br />
         <Results />
       </section>

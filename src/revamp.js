@@ -1,17 +1,17 @@
 
 import axios from 'axios'
-const { concat, pipe, join, map, toPairs, split, fromPairs } = require('ramda')
+// const { concat, pipe, join, map, toPairs, split, fromPairs } = require('ramda')
 
 // // begin fetchToken
 
-const createQueryStringFromObject = pipe(toPairs(),map(join('=')), join('&'), concat('?'))
+// const createQueryStringFromObject = pipe(toPairs(),map(join('=')), join('&'), concat('?'))
 
-const fetchTokenUrl = (MEETUP_CLIENT_ID,MEETUP_REDIRECT_URI) => {
-  const oauthTwoRequest = `https://secure.meetup.com/oauth2/authorize?client_id=${MEETUP_CLIENT_ID}&response_type=token&redirect_uri=${MEETUP_REDIRECT_URI}`;
-  return oauthTwoRequest;
-}
+// const fetchTokenUrl = (MEETUP_CLIENT_ID,MEETUP_REDIRECT_URI) => {
+//   const oauthTwoRequest = `https://secure.meetup.com/oauth2/authorize?client_id=${MEETUP_CLIENT_ID}&response_type=token&redirect_uri=${MEETUP_REDIRECT_URI}`;
+//   return oauthTwoRequest;
+// }
 
-const fetchValuesFromResulHash = pipe(split('&'), map(split('=')),fromPairs())
+// const fetchValuesFromResulHash = pipe(split('&'), map(split('=')),fromPairs())
 
 // const shouldRenewToken = (state, timeNowInSeconds) => {
 export const shouldRenewToken = (state) => {
@@ -40,18 +40,59 @@ export const fetchName = (token) => {
   .then(res => { return res});
 }
 
-export const fetchMeetup = (token) => {
+export const fetchMeetup = (token, additionalParams) => {
   const meetupConfig = {
       url: 'https://api.meetup.com/self/events',
       params: {
         page: 20,
         status: 'upcoming',
         access_token: token
+      },
+      headers: {
+        "Accept": "*/*"
       }
   }
-  return axios(meetupConfig)
+  return axios(meetupConfig) 
   .catch(err => { return 'error, probably 429' })
-  .then(res => { return res});
+  .then(res => { console.log({data: res.data}); return res.data});
+}
+
+export const fetchSpecificGroupMeetup = (token, additionalParams, groupName) => {
+  groupName = groupName.replace(/(#+)|([!].+)/g, '')
+  groupName = groupName.replace(/[^0-9a-zA-Z]+/g, '-')
+  const meetupConfig = {
+      url: 'https://api.meetup.com/2/events',
+      params: {
+        access_token: token,
+        page: 20,
+        status: 'upcoming'
+      },
+      headers: {
+        "Accept": "*/*"
+      }
+  }
+  additionalParams={...additionalParams, group_urlname: groupName}
+  meetupConfig.params = {...additionalParams, ...meetupConfig.params}
+  
+  return axios(meetupConfig)
+  .catch(err => { console.log({err}); return 'error, probably 429' })
+  .then(res => { console.log(res.data.results); return res.data.results; });
+}
+
+export const fetchGroups = (token, additionalParams) => {
+  const groupConfig = {
+      url: 'https://api.meetup.com/self/groups',
+      params: {
+        page: 20,
+        access_token: token,
+        only:'name'
+      },
+      headers: {
+        "Accept": "*/*"
+      }
+  }
+  return axios(groupConfig)
+  .then(res => { return res.data});
 }
 
 // https://www.meetup.com/meetup_api/docs/batch/
