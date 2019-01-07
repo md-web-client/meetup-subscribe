@@ -40,7 +40,7 @@ class Routes extends Component {
         <Switch>
           <Route path="/" exact component={ Login } />
           <Route path="/error" exact render={(props) => <Error history={history} />} />
-          <Route path="/login" exact render={(props) => <Login />} />
+          <Route path="/login" exact component={ Login } />
           <Route path="/meetups" exact render={(props) => <Meetups meetups={meetups} onSelect={this.show} isFetching={isFetching} />} />
           <Route path="/meetupdetails" exact render={(props) => <MeetupDetails meetup={meetup} onBack={this.home} />} />
           <Route path="/rsvp" exact render={(props) => <RsvpComponent meetups={meetups} session={session} rsvp={this.rsvp} />} />
