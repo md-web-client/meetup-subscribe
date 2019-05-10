@@ -27,8 +27,16 @@ export function currentTimeLeft(expires_in){
 }
 
 // // end fetchToken
+export const decideErrorRedirect = ( err, history) => {
+  const corsCheck = JSON.stringify( err.request.toString() ) === '"[object XMLHttpRequest]"'; 
+  if(corsCheck){
+    history.push('error'); console.log('error, probably 429');
+  } else{
+    console.log('error, probably NOT 429'); }; 
+  return 'error, probably 429'  
+}
 
-export const fetchName = (token) => {
+export const fetchName = (token, history) => {
   const nameConfig = {
     url: 'https://api.meetup.com/members/self',
     params: {
@@ -36,11 +44,12 @@ export const fetchName = (token) => {
     }
   }
   return axios(nameConfig)
-  .catch(err => { return 'error, probably 429' })
-  .then(res => { return res});
+  .then(res => { return res})
+  .catch(err => { decideErrorRedirect(err, history)} )
 }
 
-export const fetchMeetup = (token, additionalParams) => {
+
+export const fetchMeetup = (token, additionalParams, history) => {
   const meetupConfig = {
       url: 'https://api.meetup.com/self/events',
       params: {
@@ -53,11 +62,11 @@ export const fetchMeetup = (token, additionalParams) => {
       }
   }
   return axios(meetupConfig) 
-  .catch(err => { return 'error, probably 429' })
-  .then(res => { console.log({data: res.data}); return res.data});
+  .then(res => { console.log({data: res.data}); return res.data})
+  .catch(err => {decideErrorRedirect(err, history)} )
 }
 
-export const fetchSpecificGroupMeetup = (token, additionalParams, groupName) => {
+export const fetchSpecificGroupMeetup = (token, additionalParams, groupName,history) => {
   groupName = groupName.replace(/(#+)|([!].+)/g, '')
   groupName = groupName.replace(/[^0-9a-zA-Z]+/g, '-')
   const meetupConfig = {
@@ -75,11 +84,11 @@ export const fetchSpecificGroupMeetup = (token, additionalParams, groupName) => 
   meetupConfig.params = {...additionalParams, ...meetupConfig.params}
   
   return axios(meetupConfig)
-  .catch(err => { console.log({err}); return 'error, probably 429' })
-  .then(res => { console.log(res.data.results); return res.data.results; });
+  .then(res => { console.log(res.data.results); return res.data.results; })
+  .catch(err => { decideErrorRedirect(err, history)} )
 }
 
-export const fetchGroups = (token, additionalParams) => {
+export const fetchGroups = (token, additionalParams, history) => {
   const groupConfig = {
       url: 'https://api.meetup.com/self/groups',
       params: {
@@ -91,12 +100,13 @@ export const fetchGroups = (token, additionalParams) => {
         "Accept": "*/*"
       }
   }
-  return axios(groupConfig)
-  .then(res => { return res.data});
+  return axios(groupConfig) 
+  .then(res => { return res.data})
+  .catch(err => { decideErrorRedirect(err, history)} )
 }
 
 // https://www.meetup.com/meetup_api/docs/batch/
-export const rsvp = (token, id, attendValue) => {
+export const rsvp = (token, id, attendValue,history) => {
   const config = {
     method: 'POST',
     url: 'https://api.meetup.com/2/rsvp',
@@ -110,8 +120,8 @@ export const rsvp = (token, id, attendValue) => {
     }
   };
   return axios(config)
-  .catch(err => { return 'error, probably 429' })
-  .then(res => { return res});
+  .then(res => { return res})
+  .catch(err => { decideErrorRedirect(err, history)} )
 }
 
     // case LOAD_DATA:
