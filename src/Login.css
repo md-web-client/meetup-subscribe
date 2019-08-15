@@ -9,6 +9,14 @@
 }
 
 #Login-container { max-width: 493px; }
+#Login-button {
+  width: 300px;
+  height: 100px; 
+  background-color: powderblue;
+}
+#Login-lite {
+  height: 100px;
+}
 
 .pd-vw-5 { padding: 0px 2.5vw; }
 
@@ -16,3 +24,11 @@
 .pd-r-3{ padding-right: 1.5rem; }
 
 .ma-center { margin: 0 auto; }
+
+.justify-end { display: flex; justify-content: flex-end; }
+.flex-center { display:flex; justify-content: center; align-items: center;}
+
+.ph-3 { 
+  padding-right: 24px;
+  padding-top: 24px;
+}
