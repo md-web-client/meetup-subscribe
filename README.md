@@ -1,5 +1,5 @@
 # Usage,
-Website is live at this [url](http://meetup-subscribe.s3-website-us-east-1.amazonaws.com): http://meetup-subscribe.s3-website-us-east-1.amazonaws.com
+Website is live at this [url](https://meetup-subscribe.surge.sh): https://meetup-subscribe.surge.sh
 
 Rsvp's only work for meetups that have been announced by the organizer. 🧐
 
