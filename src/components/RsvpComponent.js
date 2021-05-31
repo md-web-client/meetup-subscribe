@@ -136,7 +136,25 @@ export default class RsvpComponent extends React.Component {
           minWidth: '466px', minHeight: 'calc(100vh - 36px)',
           pointerEvents: this.state.loading ? 'none' : 'auto'
       }}>
-        <div className={this.state.loading ? 'overlay' : ''} ></div>
+        {
+          this.state.loading && <>
+            <div className='overlay' >
+              <div style={{
+                position: 'absolute',
+                left: 'calc(50% - 200px)',
+                top: '30%',
+                borderRadius: '20px',
+                backgroundColor: 'white',
+                width: '400px',
+                height: '150px'
+              }}>
+                <h1 style={{margin: '2rem'}}>
+                  Loading, please be patient
+                </h1>
+              </div>
+            </div>
+          </>
+        }
         <Header />
         <br />
         <SearchGroupsUsingButtons label="Search Group" />
