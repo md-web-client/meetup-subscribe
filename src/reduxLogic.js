@@ -8,24 +8,32 @@ export let checkOauth  = (passedProps) => {
     } else {
         const sessionExpiresAt = sessionStorage.getItem('sessionExpiresAt')
         const sessionAccessToken = sessionStorage.getItem('sessionAccessToken')
-        console.log({checkTokenExpiration: getTimeLeft({expiresAt: sessionExpiresAt})})
-        if (sessionAccessToken && sessionExpiresAt) {
-            console.info('returning visitor - load data')
+        if( Number(getTimeLeft(sessionExpiresAt) > 0 && passedProps.history.location.pathname === "/login") ){
+        }
+        else {
+            console.log({checkTokenExpiration: Number(
+                getTimeLeft(
+                    {expiresAt: sessionExpiresAt}
+                ))
+            })
 
-            passedProps.dispatch(loadData())
-            passedProps.dispatch(fetchMeetups(sessionAccessToken, passedProps.history))
+            if (sessionAccessToken && sessionExpiresAt) {
+                console.info('returning visitor - load data')
 
-        } else {
-            console.info('first time visitor', passedProps.history)
+                passedProps.dispatch(loadData())
+                passedProps.dispatch(fetchMeetups(sessionAccessToken, passedProps.history))
+            } else {
+                console.info('first time visitor', passedProps.history)
 
-            if (window.location.hash.length > 0) {
-            console.info('redirect back from meetup &b have fragment')
-            const oauthResponse = parseQs(window.location.hash)
+                if (window.location.hash.length > 0) {
+                console.info('redirect back from meetup &b have fragment')
+                const oauthResponse = parseQs(window.location.hash)
 
-            // save data
-            console.info('save to session storage and state')
-            passedProps.dispatch(saveSession(oauthResponse))
-            passedProps.dispatch(fetchMeetups(oauthResponse.access_token, passedProps.history))
+                // save data
+                console.info('save to session storage and state')
+                passedProps.dispatch(saveSession(oauthResponse))
+                passedProps.dispatch(fetchMeetups(oauthResponse.access_token, passedProps.history))
+                }
             }
         }
     }
