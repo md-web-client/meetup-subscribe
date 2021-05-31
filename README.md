@@ -36,6 +36,7 @@ MIT © [epoch](https://github.com/epoch)
 
 ## Deploy to surge.sh
 ```bash
+npm install -g surge;
 yarn build; cp build/index.html build/200.html; echo '*' > build/CORS; surge build meetup-subscribe.surge.sh
 # make sure cache is disabled in network tab of dev tools.
 ```
