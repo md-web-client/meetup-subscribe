@@ -1,5 +1,6 @@
-import { loadData, saveSession, fetchMeetups } from './actions'
-import { parseQs } from './lib/queryString'
+import { loadData, saveSession, fetchMeetups } from './actions';
+import { parseQs } from './lib/queryString';
+import {getTimeLeft} from './revamp';
 
 export let checkOauth  = (passedProps) => {
     if(passedProps.history.location.pathname === "/error"){
@@ -7,7 +8,7 @@ export let checkOauth  = (passedProps) => {
     } else {
         const sessionExpiresAt = sessionStorage.getItem('sessionExpiresAt')
         const sessionAccessToken = sessionStorage.getItem('sessionAccessToken')
-
+        console.log({checkTokenExpiration: getTimeLeft({expiresAt: sessionExpiresAt})})
         if (sessionAccessToken && sessionExpiresAt) {
             console.info('returning visitor - load data')
 
