@@ -34,3 +34,9 @@ Meetup Oauth 2 application based on [meup_by_epoch](https://github.com/epoch/meu
 MIT © [epoch](https://github.com/epoch)
 **Meup** is a lean web client that shows all your upcoming [meetups](https://www.meetup.com/) in a single page.
 
+## Deploy to surge.sh
+```bash
+npm install -g surge;
+yarn build; cp build/index.html build/200.html; echo '*' > build/CORS; surge build meetup-subscribe.surge.sh
+# make sure cache is disabled in network tab of dev tools.
+```
