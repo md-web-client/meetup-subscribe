@@ -10,6 +10,7 @@ import { createLogger } from 'redux-logger'
 import { Provider } from 'react-redux'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Routes from './Router/Routes'
+import './index.css';
 
 // import * as serviceWorker from './serviceWorker';
 

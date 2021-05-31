@@ -87,7 +87,7 @@ export const fetchSpecificGroupMeetup = (token, additionalParams, groupName,hist
   meetupConfig.params = {...additionalParams, ...meetupConfig.params}
   
   return axios(meetupConfig)
-  .then(res => { console.log(res.data.results); return res.data.results; })
+  .then(res => { return res.data.results; })
   .catch(err => { decideErrorRedirect(err, history)} )
 }
 
@@ -122,9 +122,11 @@ export const rsvp = (token, id, attendValue,history) => {
       "Accept": "*/*"
     }
   };
-  return axios(config)
-  .then(res => { return res})
-  .catch(err => { decideErrorRedirect(err, history)} )
+  return axios(config).then(res => {
+    return res
+  })
+  .catch(err => {
+    decideErrorRedirect(err, history)} )
 }
 
     // case LOAD_DATA:
