@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<script>
+if (location.protocol !== 'https:') {
+/*    location.replace(`https:${location.href.substring(location.protocol.length)}`); */
+	console.log('not https!')
+}
+</script>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
