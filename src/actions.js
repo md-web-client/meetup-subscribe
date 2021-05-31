@@ -51,6 +51,9 @@ export function fetchMeetups(token, history) {
       dispatch(toLogin())
       history.push('login')
     } else {
+      if(history.location.pathname === "/login" && !document.location.hash) {
+        return
+      }
       console.info('token still good')
       dispatch(requestMeetups())
       history.push('rsvp')

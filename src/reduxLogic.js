@@ -1,5 +1,6 @@
-import { loadData, saveSession, fetchMeetups } from './actions'
-import { parseQs } from './lib/queryString'
+import { loadData, saveSession, fetchMeetups } from './actions';
+import { parseQs } from './lib/queryString';
+import {getTimeLeft} from './revamp';
 
 export let checkOauth  = (passedProps) => {
     if(passedProps.history.location.pathname === "/error"){
@@ -13,7 +14,6 @@ export let checkOauth  = (passedProps) => {
 
             passedProps.dispatch(loadData())
             passedProps.dispatch(fetchMeetups(sessionAccessToken, passedProps.history))
-
         } else {
             console.info('first time visitor', passedProps.history)
 

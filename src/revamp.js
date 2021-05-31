@@ -13,15 +13,18 @@ import axios from 'axios'
 
 // const fetchValuesFromResulHash = pipe(split('&'), map(split('=')),fromPairs())
 
+const timeNowInSeconds = new Date() / 1000
+
 // const shouldRenewToken = (state, timeNowInSeconds) => {
 export const shouldRenewToken = (state) => {
   const expiresAt = state.session.expiresAt;
-  const timeNowInSeconds = new Date() / 1000 // in seconds
-
-  console.info('token will expire in', (expiresAt - timeNowInSeconds) / 60, 'minutes')
+   // in seconds
+  console.info('token will expire in', getTimeLeft({expiresAt}), 'minutes')
   return timeNowInSeconds > expiresAt ? true : false
 }
-
+export const getTimeLeft = ({expiresAt}) => {
+  return (expiresAt - timeNowInSeconds) / 60
+}
 export function currentTimeLeft(expires_in){
   return ((new Date() / 1000) + expires_in)
 }
