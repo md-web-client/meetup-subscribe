@@ -20,33 +20,59 @@ export default class RsvpComponent extends React.Component {
   }
 
   rsvpMe = (attendValue) => {
-    let meetup = this.state.meetups  
+    let meetup = this.state.meetups;
+
     this.setState({status: `Submitting! "${attendValue}" to all of your meetups`, loading: true})
     const process1 = async (meetup) => {
-      if(meetup.length > 0) {
+      if(meetup.length > 1) {
         const [ uniqmeetup, ...restOfMeetups ] = meetup;
         const res = await rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue, this.props.history);
-        if(res.headers["x-ratelimit-remaining"] === "1" || res.headers["x-ratelimit-remaining"] === "0") {
-          console.log('reached 1', {a: (res.headers["x-ratelimit-remaining"] === "1"),b: Number(res.headers["x-ratelimit-reset"])});
+        const remainingRequests = Number(res.headers["x-ratelimit-remaining"]);
 
-          return await setTimeout(() => {
-            return process1(restOfMeetups);  
-          }, Number(res.headers["x-ratelimit-reset"]) * 1000 );
+        let removed = restOfMeetups.splice(0, remainingRequests);
+        const final = removed.pop()
+        if(removed.length > 0) {
+          await handleChunk(removed)
         }
-        else {
-          return process1(restOfMeetups);
+        if(final){
+          const finalRes = await rsvp(this.props.session.accessToken, final.id, attendValue, this.props.history);
+          const secondsUntilRefresh = Number(finalRes.headers["x-ratelimit-reset"]);
+          const finalRemaining = Number(res.headers["x-ratelimit-remaining"]);
+          if(restOfMeetups.length > 0){ // secondsUntilRefresh < 5 && 
+            const resolveAfterTime = () => new Promise(resolve => {
+              setTimeout(() => {
+                resolve();
+              }, secondsUntilRefresh * 1000)
+            })
+            await resolveAfterTime();
+            await process1(restOfMeetups)
+          }
         }
       }
+      if(meetup.length === 1) {
+        const [ uniqmeetup, ...restOfMeetups ] = meetup;
+        const res = await rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue, this.props.history);
+      }
+    }
+    const handleChunk = async (meetups) => {
+      return Promise.all(
+        meetups.map( (uniqmeetup) => {
+          return rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue, this.props.history);
+        })
+      )
+      .then(res => { return res; })
     }
     process1(meetup)
     .then(x => {
       this.setState({status: `Great Success! "${attendValue}" to all of your meetups`, loading: false})
     })
+    .catch(err => {
+      this.setState({status: `Something went wrong - try again later and open an issue thanks`, loading: false})
+    })
   }
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.meetups !== prevProps.meetups) {
-      console.log(this.state)
       this.setState({meetups:this.props.meetups})
     }
   }
