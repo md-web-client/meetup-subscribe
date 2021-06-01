@@ -7,6 +7,7 @@ export default class Login extends React.Component {
     // const MEETUP_CLIENT_ID = 'ndioq3jd0me4s8d65lfp0vv69q'; // this one is for production. https://meetup-oauth2.herokuapp.com/index.html
     // const MEETUP_CLIENT_ID = 'niqkagsfu07kb2coik832vljhm'; // this one is for local dev. http://127.0.0.1:3000
     const MEETUP_CLIENT_ID = 'i1luu3qbht8m2qn7fl1so0aa49'; // this one is for s3.
+    // const MEETUP_CLIENT_ID = '8j4c88l3ac4neg7b46oorrolfb' // this one is for localhost:3000;
     const MEETUP_REDIRECT_URI = window.location.href;
 
     const params = {
