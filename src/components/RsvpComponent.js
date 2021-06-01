@@ -5,10 +5,6 @@ import { rsvp, fetchMeetup, fetchSpecificGroupMeetup } from '../revamp'
 const buttonStyle = {
   borderRadius: '.5rem',
 };
-
-// session: {
-//   accessToken: '',
-
 export default class RsvpComponent extends React.Component {
   constructor(props){
     super(props);
@@ -18,14 +14,34 @@ export default class RsvpComponent extends React.Component {
     this.fetchMeetup = fetchMeetup.bind(this)
     this.state={
       meetups:[],
-      status:"So far no rsvp logged"
+      status:"So far no rsvp logged",
+      loading: false
     }
   }
-  
+
   rsvpMe = (attendValue) => {
     let meetup = this.state.meetups  
-    this.setState({status: `Great Success! "${attendValue}" to all of your meetups`})  
-    meetup ? this.state.meetups.map(uniqmeetup => rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue, this.props.history)) : console.log('empty')
+    this.setState({status: `Submitting! "${attendValue}" to all of your meetups`, loading: true})
+    const process1 = async (meetup) => {
+      if(meetup.length > 0) {
+        const [ uniqmeetup, ...restOfMeetups ] = meetup;
+        const res = await rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue, this.props.history);
+        if(res.headers["x-ratelimit-remaining"] === "1" || res.headers["x-ratelimit-remaining"] === "0") {
+          console.log('reached 1', {a: (res.headers["x-ratelimit-remaining"] === "1"),b: Number(res.headers["x-ratelimit-reset"])});
+
+          return await setTimeout(() => {
+            return process1(restOfMeetups);  
+          }, Number(res.headers["x-ratelimit-reset"]) * 1000 );
+        }
+        else {
+          return process1(restOfMeetups);
+        }
+      }
+    }
+    process1(meetup)
+    .then(x => {
+      this.setState({status: `Great Success! "${attendValue}" to all of your meetups`, loading: false})
+    })
   }
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
@@ -118,7 +134,27 @@ export default class RsvpComponent extends React.Component {
       <section style={{ 
           backgroundColor: 'powderblue', paddingTop: '20px', paddingLeft: '20px',
           minWidth: '466px', minHeight: 'calc(100vh - 36px)',
-      }} >
+          pointerEvents: this.state.loading ? 'none' : 'auto'
+      }}>
+        {
+          this.state.loading && <>
+            <div className='overlay' >
+              <div style={{
+                position: 'absolute',
+                left: 'calc(50% - 200px)',
+                top: '30%',
+                borderRadius: '20px',
+                backgroundColor: 'white',
+                width: '400px',
+                height: '150px'
+              }}>
+                <h1 style={{margin: '2rem'}}>
+                  Loading, please be patient
+                </h1>
+              </div>
+            </div>
+          </>
+        }
         <Header />
         <br />
         <SearchGroupsUsingButtons label="Search Group" />
