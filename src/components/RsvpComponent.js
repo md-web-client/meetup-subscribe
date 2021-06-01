@@ -24,14 +24,12 @@ export default class RsvpComponent extends React.Component {
 
     this.setState({status: `Submitting! "${attendValue}" to all of your meetups`, loading: true})
     const process1 = async (meetup) => {
-      console.log({meetup})
       if(meetup.length > 1) {
         const [ uniqmeetup, ...restOfMeetups ] = meetup;
         const res = await rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue, this.props.history);
         const remainingRequests = Number(res.headers["x-ratelimit-remaining"]);
 
         let removed = restOfMeetups.splice(0, remainingRequests);
-        console.log({removed, restOfMeetups, remainingRequests})
         const final = removed.pop()
         if(removed.length > 0) {
           await handleChunk(removed)
@@ -40,7 +38,6 @@ export default class RsvpComponent extends React.Component {
           const finalRes = await rsvp(this.props.session.accessToken, final.id, attendValue, this.props.history);
           const secondsUntilRefresh = Number(finalRes.headers["x-ratelimit-reset"]);
           const finalRemaining = Number(res.headers["x-ratelimit-remaining"]);
-          console.log({finalRes, finalRemaining, secondsUntilRefresh})
           if(restOfMeetups.length > 0){ // secondsUntilRefresh < 5 && 
             const resolveAfterTime = () => new Promise(resolve => {
               setTimeout(() => {
@@ -48,7 +45,6 @@ export default class RsvpComponent extends React.Component {
               }, secondsUntilRefresh * 1000)
             })
             await resolveAfterTime();
-            console.log({restOfMeetups})
             await process1(restOfMeetups)
           }
         }
@@ -61,26 +57,22 @@ export default class RsvpComponent extends React.Component {
     const handleChunk = async (meetups) => {
       return Promise.all(
         meetups.map( (uniqmeetup) => {
-          console.log({id: uniqmeetup.id, uniqmeetup});
           return rsvp(this.props.session.accessToken, uniqmeetup.id, attendValue, this.props.history);
         })
       )
       .then(res => { return res; })
-      .catch(err => { console.log('whoops', err); return []; })
     }
     process1(meetup)
     .then(x => {
       this.setState({status: `Great Success! "${attendValue}" to all of your meetups`, loading: false})
     })
     .catch(err => {
-      console.log('an error occured', {err})
       this.setState({status: `Something went wrong - try again later and open an issue thanks`, loading: false})
     })
   }
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.meetups !== prevProps.meetups) {
-      console.log(this.state)
       this.setState({meetups:this.props.meetups})
     }
   }
