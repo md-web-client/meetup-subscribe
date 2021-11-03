@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-
 export default class Error extends Component {
   constructor(props){
     super(props);
@@ -10,7 +9,7 @@ export default class Error extends Component {
     this.props.history.push('login')
   }
 
-  render() {  
+  render() {
     const Comp = () => <div className="ph3" style={{display:'flex', flexDirection:'column', justifyContent: 'center', alignItems: 'center'}}>
       <div style={{ padding: '20px', width:'300px',height:'100px', marginTop:'200px', backgroundColor:'powderblue'}}>
         <div style={{fontSize:"30px"}}>An Error Occoured probably '429'. Refresh the page in an Hour</div>
