@@ -5,6 +5,10 @@ export const Error = Loadable({
     loader: () => import('./components/Error'),
     loading: Loading,
 });
+export const Complete = Loadable({
+    loader: () => import('./components/Complete'),
+    loading: Loading,
+});
 export const Login = Loadable({
     loader: () => import('./components/Login'),
     loading: Loading,

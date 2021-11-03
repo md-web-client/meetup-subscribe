@@ -18,8 +18,32 @@ export default class RsvpComponent extends React.Component {
       loading: false
     }
   }
-
   rsvpMe = (attendValue) => {
+    let meetups = this.state.meetups;
+
+    this.setState({status: `Submitting! "${attendValue}" to all of your meetups`, loading: true})
+    const process1 = async (meetups) => {
+      if(meetups.length > 0) {
+        for(let i = 0; i < meetups.length; i++) {
+          const uniqmeetup = meetups[i]
+          const { event_url, link } = uniqmeetup;
+          await new Promise(resolve => setTimeout(resolve, 2000))
+          window.open(`${event_url || link}/?action=rsvp&response=${attendValue}`,'_newtab');
+        };
+      }
+    }
+
+    process1(meetups)
+    .then(x => {
+      window.open(`http://localhost:3000/complete`,'_newtab');
+      this.setState({status: `Great Success! "${attendValue}" to all of your meetups`, loading: false})
+    })
+    .catch(err => {
+      window.open(`http://localhost:3000/complete`,'_newtab');
+      this.setState({status: `Something went wrong - try again later and open an issue thanks`, loading: false})
+    })
+  }
+  rsvpMeOldBrokenApi = (attendValue) => {
     let meetup = this.state.meetups;
 
     this.setState({status: `Submitting! "${attendValue}" to all of your meetups`, loading: true})
@@ -38,7 +62,7 @@ export default class RsvpComponent extends React.Component {
           const finalRes = await rsvp(this.props.session.accessToken, final.id, attendValue, this.props.history);
           const secondsUntilRefresh = Number(finalRes.headers["x-ratelimit-reset"]);
           const finalRemaining = Number(res.headers["x-ratelimit-remaining"]);
-          if(restOfMeetups.length > 0){ // secondsUntilRefresh < 5 && 
+          if(restOfMeetups.length > 0){ // secondsUntilRefresh < 5 &&
             const resolveAfterTime = () => new Promise(resolve => {
               setTimeout(() => {
                 resolve();
@@ -119,21 +143,21 @@ export default class RsvpComponent extends React.Component {
       return ( <div>
         <div style={{ display: 'flex' }}>
           <span style={{minWidth: '170px' }}>{label}</span>
-          <button onClick={() => { 
-            fetchMeetup(this.props.session.accessToken, {}, this.props.history) 
+          <button onClick={() => {
+            fetchMeetup(this.props.session.accessToken, {}, this.props.history)
             .then(x => {this.setState({meetups: x})})
           }}>
             Display All Meetups (default behavior)
           </button>
         </div>
         <br/>
-        {this.props.meetups.groups ? this.props.meetups.groups.map( (obj, index) => { 
+        {this.props.meetups.groups ? this.props.meetups.groups.map( (obj, index) => {
           return <button onClick={() => {
               fetchSpecificGroupMeetup(this.props.session.accessToken, {}, obj.name, this.props.history)
               .then(x => {this.setState({meetups: x})})
             }
           } key={index} >{obj.name}</button>
-          }) : <div></div> 
+          }) : <div></div>
         }
       </div>
     )
@@ -148,16 +172,16 @@ export default class RsvpComponent extends React.Component {
             <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
             <br/>{ meetup.group.name} at { meetup.venue.name}
             <br/><br/>Join Mode: { meetup.group.join_mode}
-            <br/><br/>description: { meetup.description.replace(/<\/?[^>]+(>|$)/g, "")} 
+            <br/><br/>description: { meetup.description.replace(/<\/?[^>]+(>|$)/g, "")}
             <br/>{ meetup.venue.repinned}
             <hr/>
-          </div>}) : <div></div> } 
+          </div>}) : <div></div> }
         </div>
       </div>
     );
-    
+
     return (
-      <section style={{ 
+      <section style={{
           backgroundColor: 'powderblue', paddingTop: '20px', paddingLeft: '20px',
           minWidth: '466px', minHeight: 'calc(100vh - 36px)',
           pointerEvents: this.state.loading ? 'none' : 'auto'
