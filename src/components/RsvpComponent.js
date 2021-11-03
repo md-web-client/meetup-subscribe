@@ -35,11 +35,11 @@ export default class RsvpComponent extends React.Component {
 
     process1(meetups)
     .then(x => {
-      window.open(`http://localhost:3000/complete`,'_newtab');
+      window.open(`/complete`,'_newtab');
       this.setState({status: `Great Success! "${attendValue}" to all of your meetups`, loading: false})
     })
     .catch(err => {
-      window.open(`http://localhost:3000/complete`,'_newtab');
+      window.open(`/complete`,'_newtab');
       this.setState({status: `Something went wrong - try again later and open an issue thanks`, loading: false})
     })
   }
