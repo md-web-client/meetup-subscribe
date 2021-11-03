@@ -38,13 +38,13 @@ class Routes extends Component {
     const { meetups, meetup, groups, isFetching, session, history} = this.props
     return (
         <Switch>
-          <Route path="/" exact component={ Login } />
           <Route path="/error" exact render={(props) => <Error history={history} />} />
-          <Route path="/complete" exact render={(props) => <Complete history={history} />} />
+          <Route path="/complete" exact render={(props) => <Complete />} />
           <Route path="/login" exact component={ Login } />
           <Route path="/meetups" exact render={(props) => <Meetups meetups={meetups} onSelect={this.show} isFetching={isFetching} />} />
           <Route path="/meetupdetails" exact render={(props) => <MeetupDetails meetup={meetup} onBack={this.home} />} />
           <Route path="/rsvp" exact render={(props) => <RsvpComponent groups={groups} meetups={meetups} history={history} session={session} rsvp={this.rsvp} />} />
+          <Route path="/" exact component={ Login } />
           <Route render={() => <Redirect to="/" />} />
         </Switch>
     )

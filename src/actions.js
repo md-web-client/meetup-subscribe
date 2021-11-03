@@ -54,6 +54,9 @@ export function fetchMeetups(token, history) {
       if(history.location.pathname === "/login" && !document.location.hash) {
         return
       }
+      if(history.location.pathname === "/complete") {
+        return
+      }
       console.info('token still good')
       dispatch(requestMeetups())
       history.push('rsvp')
@@ -63,7 +66,6 @@ export function fetchMeetups(token, history) {
           let groups = await fetchGroups(token, history)
           meetups.groups = groups
           meetups.name = name
-          
           return dispatch(receivedMeetups(meetups))
         }
         catch(e){
