@@ -25,11 +25,13 @@ export default class RsvpComponent extends React.Component {
     const process1 = async (meetups) => {
       if(meetups.length > 0) {
         for(let i = 0; i < meetups.length; i++) {
-          const uniqmeetup = meetups[i]
+          const uniqmeetup = meetups[i];
           const { event_url, link } = uniqmeetup;
-          await new Promise(resolve => setTimeout(resolve, 2000))
+          await new Promise(resolve => setTimeout(resolve, 2000));
           window.open(`${event_url || link}/?action=rsvp&response=${attendValue}`,'_newtab');
         };
+        // needed so that the last request finishes and is not interrupted by complete request.
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
     }
 
