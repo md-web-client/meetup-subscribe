@@ -56,7 +56,7 @@ export const fetchMeetup = (token, additionalParams, history) => {
   const meetupConfig = {
       url: 'https://api.meetup.com/self/events',
       params: {
-        page: 20,
+        page: 200,
         status: 'upcoming',
         access_token: token
       },
@@ -76,7 +76,7 @@ export const fetchSpecificGroupMeetup = (token, additionalParams, groupName,hist
       url: 'https://api.meetup.com/2/events',
       params: {
         access_token: token,
-        page: 20,
+        page: 200,
         status: 'upcoming'
       },
       headers: {
@@ -95,7 +95,7 @@ export const fetchGroups = (token, additionalParams, history) => {
   const groupConfig = {
       url: 'https://api.meetup.com/self/groups',
       params: {
-        page: 20,
+        page: 200,
         access_token: token,
         only:'name'
       },

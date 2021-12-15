@@ -20,7 +20,7 @@ export default class RsvpComponent extends React.Component {
   }
   rsvpMe = (attendValue) => {
     let meetups = this.state.meetups;
-
+    console.log({a: this.state.meetups})
     this.setState({status: `Submitting! "${attendValue}" to all of your meetups`, loading: true})
     const process1 = async (meetups) => {
       if(meetups.length > 0) {
@@ -170,7 +170,18 @@ export default class RsvpComponent extends React.Component {
           <div>
             { this.state.meetups ? this.state.meetups.map( (meetup, index) => { return <div key={index}>
             <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
-            <br/>{ meetup.group.name} at { meetup.venue.name}
+            <br/>{ meetup.group.name} at { meetup.venue.name} 
+              <>
+                <span style={{ minWidth: '170px', padding: '0 1rem' }}>
+                  <button style={buttonStyle} onClick={() => {
+                    this.fetchSpecificGroupMeetup(this.props.session.accessToken, {}, meetup.group.name, this.props.history)
+                    .then(res => { return meetup.venue.name ? res.filter(meetupItem => meetupItem.venue.name === meetup.venue.name) : res })
+                    .then(x => {this.setState({meetups: x})})
+                  }} >
+                    Filter by title
+                  </button>
+                </span>
+              </>
             <br/><br/>Join Mode: { meetup.group.join_mode}
             <br/><br/>description: { meetup.description.replace(/<\/?[^>]+(>|$)/g, "")}
             <br/>{ meetup.venue.repinned}
