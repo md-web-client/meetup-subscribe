@@ -40,21 +40,25 @@ export const decideErrorRedirect = ( err, history) => {
 }
 
 export const fetchName = (token, history) => {
+  const query='query { self { id name upcomingEvents { pageInfo { startCursor } count edges { node { title } } } } }'
   const nameConfig = {
-    url: 'https://api.meetup.com/members/self',
+    url: 'https://api.meetup.com/gql/',
     params: {
-    access_token: token
+      access_token: token,
+      query
     }
   }
-  return axios(nameConfig)
+  return axios.post(nameConfig)
   .then(res => { return res})
   .catch(err => { decideErrorRedirect(err, history)} )
 }
 
 
 export const fetchMeetup = (token, additionalParams, history) => {
+  const query='query { self { id name upcomingEvents { pageInfo { startCursor } count edges { node { title } } } } }'
+  // url: 'https://api.meetup.com/self/events',
   const meetupConfig = {
-      url: 'https://api.meetup.com/self/events',
+      url: 'https://api.meetup.com/gql/',
       params: {
         page: 200,
         status: 'upcoming',
@@ -62,9 +66,10 @@ export const fetchMeetup = (token, additionalParams, history) => {
       },
       headers: {
         "Accept": "*/*"
-      }
+      },
+      body: query
   }
-  return axios(meetupConfig) 
+  return axios.post(meetupConfig) 
   .then(res => { console.log({data: res.data}); return res.data})
   .catch(err => {decideErrorRedirect(err, history)} )
 }
