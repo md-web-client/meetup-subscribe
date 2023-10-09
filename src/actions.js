@@ -62,11 +62,12 @@ export function fetchMeetups(token, history) {
       history.push('rsvp')
         try{
           let name = (await fetchName(token, history)).data.name
-          let meetups = (await fetchMeetup(token, {}, history))
-          let groups = await fetchGroups(token, history)
-          meetups.groups = groups
-          meetups.name = name
-          return dispatch(receivedMeetups(meetups))
+          // let meetups = (await fetchMeetup(token, {}, history))
+          // let groups = await fetchGroups(token, history)
+          // meetups.groups = groups
+          console.log({name})
+          // meetups.name = name
+          // return dispatch(receivedMeetups(meetups))
         }
         catch(e){
           console.log(e)
