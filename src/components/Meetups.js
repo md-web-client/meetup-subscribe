@@ -7,10 +7,11 @@ class Meetups extends Component {
     const { meetups, onSelect, isFetching } = this.props
 
     const content = meetups.map((meetup, index) => {
+      const { name, time, id } = meetup // meetups
       return <div key={index}>
-        <button  style={{width:'100%'}} onClick={(event) => onSelect(event, meetup.id)}>
-          <div style={{textAlign:'left'}}>{meetup.name}</div>
-          <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
+        <button  style={{width:'100%'}} onClick={(event) => onSelect(event, id)}>
+          <div style={{textAlign:'left'}}>{name}</div>
+          <div style={{textAlign:'left'}}>{moment(time).fromNow()}</div>
         </button>
       </div>
     })

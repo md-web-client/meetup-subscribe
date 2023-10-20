@@ -1,5 +1,6 @@
 
 import axios from 'axios'
+let prod
 // const { concat, pipe, join, map, toPairs, split, fromPairs } = require('ramda')
 
 // // begin fetchToken
@@ -46,7 +47,8 @@ export const fetchName = (token, history) => {
     access_token: token
     }
   }
-  return axios(nameConfig)
+  
+  return (prod) ? nameConfig : Promise.resolve({data: {name: 'michaeldimmitt'}})
   .then(res => { return res})
   .catch(err => { decideErrorRedirect(err, history)} )
 }
@@ -64,8 +66,8 @@ export const fetchMeetup = (token, additionalParams, history) => {
         "Accept": "*/*"
       }
   }
-  return axios(meetupConfig) 
-  .then(res => { console.log({data: res.data}); return res.data})
+  return (prod) ? axios(meetupConfig) : Promise.resolve({ data: meetups})
+  .then(res => { return res.data})
   .catch(err => {decideErrorRedirect(err, history)} )
 }
 
@@ -86,7 +88,7 @@ export const fetchSpecificGroupMeetup = (token, additionalParams, groupName,hist
   additionalParams={...additionalParams, group_urlname: groupName}
   meetupConfig.params = {...additionalParams, ...meetupConfig.params}
   
-  return axios(meetupConfig)
+  return (prod) ? axios(meetupConfig) : Promise.resolve({ data: {results: [exampleGroup, ...meetups]}})
   .then(res => { return res.data.results; })
   .catch(err => { decideErrorRedirect(err, history)} )
 }
@@ -103,10 +105,11 @@ export const fetchGroups = (token, additionalParams, history) => {
         "Accept": "*/*"
       }
   }
-  return axios(groupConfig) 
-  .then(res => { return res.data})
+  return (prod) ? axios(groupConfig) : Promise.resolve({ data: groups})
+  .then(res => { console.log({res}); return res.data})
   .catch(err => { decideErrorRedirect(err, history)} )
 }
+
 
 // https://www.meetup.com/meetup_api/docs/batch/
 export const rsvp = (token, id, attendValue,history) => {
@@ -162,3 +165,66 @@ export const rsvp = (token, id, attendValue,history) => {
 //   }
 //   const oauthTwoRequest = 'https://secure.meetup.com/oauth2/authorize' + createQueryStringFromObject(params)
 // }
+
+// group.name, group.join_mode
+// venue.name, venue.repinned
+const exampleGroup = {
+  name: 'code and coffee stub',
+  id: '12332',
+  group: {
+    name: 'a group',
+    join_mode: 'true'
+  },
+  venue: {
+    name: 'a venue',
+    repinned: true,
+  },
+  time: 10,
+  description: 'hi', 
+}
+const groups = [
+  exampleGroup,
+  {name: 'ruby jax stub', ...exampleGroup},
+  {name: '2600 stub', ...exampleGroup},
+  {name: 'owasp stub', ...exampleGroup},
+  {name: 'ruby jax stub', ...exampleGroup},
+  {name: '2600 stub', ...exampleGroup},
+]
+
+const meetup = {
+  created: 'true', 
+  description: 'hi', 
+  duration: 10, 
+  group: 'ruby jax stub', 
+  id: '122323', 
+  link: 'http://example.com', 
+  local_date: '2109383', 
+  local_time: '1209373', 
+  name: 'stub name', 
+  status: 'pending', 
+  time: '1232323', 
+  updated: 'false', 
+  utc_offset: '+200', 
+  venue: {
+    name: 'a venue',
+    repinned: 'true',
+  }, 
+  visibility: 'public', 
+  waitlist_count: '1', 
+  yes_rsvp_count: '1' 
+}
+const description1 = `
+Because Mondays are terrible and coffee and people make them better.
+
+Have a conversation over coffee,
+work remotely,
+Or just pop in for a visit on your way to the beach/office!
+  `
+const meetups = [
+  {...meetup, description: description1}, 
+  meetup,
+  meetup
+]
+  // const {id, venue.name, venue.lat, venue.lon, venue.repinned} = venue
+  // const { created, name, id, join_mode, lat } = group
+

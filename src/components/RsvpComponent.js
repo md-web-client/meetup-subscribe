@@ -100,6 +100,12 @@ export default class RsvpComponent extends React.Component {
       this.setState({meetups:this.props.meetups})
     }
   }
+  componentDidMount() {
+    if(this.props.meetups.length) {
+      this.setState({meetups:this.props.meetups})
+    }
+    
+  }
 
   render() {
     const Header = () => <div id="Header">Logged In as UserName</div>;
@@ -163,33 +169,38 @@ export default class RsvpComponent extends React.Component {
     )
     }
 
-    const Results = () => (
+    const Results = () => {
+      return (
       <div id="Results">
         <div>Results</div>
         <hr/>
           <div>
-            { this.state.meetups ? this.state.meetups.map( (meetup, index) => { return <div key={index}>
-            <div style={{textAlign:'left'}}>{moment(meetup.time).fromNow()}</div>
-            <br/>{ meetup.group.name} at { meetup.venue.name} 
+            {  this.state.meetups ? this.state.meetups.map( (meetup, index) => { 
+              const {group, venue, time, description} = meetup 
+              // group.name, group.join_mode
+              // venue.name, venue.repinned
+              return <div key={index}>
+            <div style={{textAlign:'left'}}>{moment(time).fromNow()}</div>
+            <br/>{ group.name} at { venue.name} 
               <>
                 <span style={{ minWidth: '170px', padding: '0 1rem' }}>
                   <button style={buttonStyle} onClick={() => {
-                    this.fetchSpecificGroupMeetup(this.props.session.accessToken, {}, meetup.group.name, this.props.history)
-                    .then(res => { return meetup.venue.name ? res.filter(meetupItem => meetupItem.venue.name === meetup.venue.name) : res })
+                    this.fetchSpecificGroupMeetup(this.props.session.accessToken, {}, group.name, this.props.history)
+                    .then(res => { return venue.name ? res.filter(meetupItem => meetupItem.venue.name === venue.name) : res })
                     .then(x => {this.setState({meetups: x})})
                   }} >
                     Filter by title
                   </button>
                 </span>
               </>
-            <br/><br/>Join Mode: { meetup.group.join_mode}
-            <br/><br/>description: { meetup.description.replace(/<\/?[^>]+(>|$)/g, "")}
-            <br/>{ meetup.venue.repinned}
+            <br/><br/>Join Mode: { group.join_mode}
+            <br/><br/>description: { description.replace(/<\/?[^>]+(>|$)/g, "")}
+            <br/>{ venue.repinned}
             <hr/>
           </div>}) : <div></div> }
         </div>
       </div>
-    );
+    )};
 
     return (
       <section style={{
